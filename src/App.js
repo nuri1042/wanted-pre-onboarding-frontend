@@ -1,25 +1,24 @@
-import "./App.css";
-import Header from "./components/Header";
-import SignIn from "./pages/SignIn";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SignUp from "./pages/SignUp";
-import Todo from "./pages/Todo";
+import Header from './component/Header';
+import Signin from './component/Signin';
+import Signup from './component/Signup';
+import Main from './component/Main';
+import Todo from './component/Todo';
+import { Routes, Route } from 'react-router-dom';
+import AuthProvider from './auth/provider';
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
+    <AuthProvider>
+      <div className='App'>
         <Header />
-        <div className="body">
-          <Routes>
-            <Route path="/"></Route>
-            <Route path="/signin" element={<SignIn />}></Route>
-            <Route path="/signup" element={<SignUp />}></Route>
-            <Route path="/todo" element={<Todo />}></Route>
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </div>
+        <Routes>
+          <Route path='/' element={<Main />}></Route>
+          <Route path='/signin' element={<Signin />}></Route>
+          <Route path='/signup' element={<Signup />}></Route>
+          <Route path='/todo' element={<Todo />}></Route>
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 
