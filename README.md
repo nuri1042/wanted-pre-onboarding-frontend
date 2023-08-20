@@ -1,7 +1,11 @@
-# 원티드 프리온보딩 프론트엔드 - 선발 과제
+# 원티드 프리온보딩 프론트엔드 인턴십 - 선발 과제
 
-## 지원자 - 김누리
+### 지원자 - 김누리
 <br/>
+
+### 과제 명세서
+https://github.com/walking-sunset/selection-task
+<br />
 
 ### 사용 라이브러리
 - React Router
