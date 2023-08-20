@@ -19,20 +19,20 @@ function TodoElement({ data, getData }) {
     isCompleted: data.isCompleted, // 체크박스
     todo: data.todo, // 수정할 내용 입력받을 변수
   });
-  const [isEditmode, setIsEditmode] = useState(false); // list가 수정모드인지 아닌지 판별
-  const [changedInput, setChangedInput] = useState(""); // 수정할 내용 입력 후에 취소 버튼 클릭 시 이전 내용 불러오기 위해 이전 내용 저장
+  const [isEditmode, setIsEditmode] = useState(false); // 리스트가 edit 모드인지 아닌지 판별하기 위함
+  const [changedInput, setChangedInput] = useState(""); // 수정 전 내용 임시저장하기 위함
 
-  // 수정할 내용 입력 후에 취소 버튼 클릭 시 이전 내용 불러옴
+  // 수정할 내용 입력 후에 '제출'버튼이 아닌 '취소' 버튼 클릭 시 이전 내용 불러옴
   function cancelEdit() {
     setInputs(changedInput);
     setIsEditmode(!isEditmode);
   }
-  // todo 내용 수정
+  // 수정한 내용 업데이트
   async function isUpdateHandler() {
     updateTodo(inputs);
     setIsEditmode(!isEditmode);
   }
-
+  // edit 모드에서 새로운 내용 입력받아 input state 변경
   function changeHandler(e) {
     const { name, value } = e.target;
     setInputs({
@@ -41,7 +41,7 @@ function TodoElement({ data, getData }) {
     });
   }
 
-  // 수정 버튼 구현
+  // 수정 버튼 클릭 후 axios 요청 통해 바뀐 내용 반영
   async function updateTodo(enteredData) {
     try {
       await axios({
@@ -77,7 +77,7 @@ function TodoElement({ data, getData }) {
     }
   }
 
-  // 체크박스 통해 완료 여부 수정
+  // 체크박스로 완료 여부 표시
   useEffect(() => {
     if (inputs.isCompleted) {
       checked.current.checked = true;
@@ -86,6 +86,7 @@ function TodoElement({ data, getData }) {
     }
   }, [inputs]);
 
+  // 체크박스로 완료 여부 표시
   async function isCompletedHandler() {
     setInputs({ ...inputs, isCompleted: !inputs.isCompleted });
   }
@@ -110,6 +111,7 @@ function TodoElement({ data, getData }) {
             </Button>
           </div>
         ) : (
+          // 수정 모드 아닐 때
           <div>
             <Span>{inputs.todo}</Span>
             <Button data-testid="modify-button" onClick={isUpdateHandler}>
