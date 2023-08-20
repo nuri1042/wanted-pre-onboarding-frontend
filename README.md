@@ -42,7 +42,7 @@
 
 #### App.js
 - 로그인 상태를 전역으로 관리하는 Context Provider로 감싸진 가장 상위의 component 입니다.
-- React Router 를 이용해 라우팅을 구현하였습니다.
+- React Router 를 이용해 Routing을 구현하였습니다.
 - 프로젝트 전역에 공통적으로 적용할 Header 컴포넌트를 적용하였습니다.
 
 #### 📂component/Signin.js
