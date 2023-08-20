@@ -1,61 +1,70 @@
-import styled from 'styled-components';
-import axios from 'axios';
-import { useState, useRef } from 'react';
-import { useEffect } from 'react';
+import axios from "axios";
+import { useState, useRef } from "react";
+import { useEffect } from "react";
+import {
+  Li,
+  Label,
+  Button,
+  Span,
+  Checkbox,
+  Input,
+} from "../styles/TodoElementStyle";
 
 function TodoElement({ data, getData }) {
-  const token = localStorage.getItem('JWT');
+  const token = localStorage.getItem("JWT");
   const checked = useRef();
 
-  const [isUpdatemode, setIsUpdatemode] = useState(false);
-  function isUpdatemodeHandler() {
-    setInputs({ ...inputs, todo: data.todo });
-    setIsUpdatemode(!isUpdatemode);
-  }
-  async function isUpdateHandler() {
-    updateHandler(inputs);
-    setIsUpdatemode(!isUpdatemode);
-  }
-
+  // 수정할 텍스트, 체크박스
   const [inputs, setInputs] = useState({
-    isCompleted: data.isCompleted,
-    todo: data.todo,
+    isCompleted: data.isCompleted, // 체크박스
+    todo: data.todo, // 수정할 내용 입력받을 변수
   });
+  const [isEditmode, setIsEditmode] = useState(false); // list가 수정모드인지 아닌지 판별
+  const [changedInput, setChangedInput] = useState(""); // 수정할 내용 입력 후에 취소 버튼 클릭 시 이전 내용 불러오기 위해 이전 내용 저장
 
-  useEffect(() => {
-    if (inputs.isCompleted) {
-      checked.current.checked = true;
-    } else {
-      checked.current.checked = false;
-    }
-  }, [inputs]);
+  // 수정할 내용 입력 후에 취소 버튼 클릭 시 이전 내용 불러옴
+  function cancelEdit() {
+    setInputs(changedInput);
+    setIsEditmode(!isEditmode);
+  }
+  // todo 내용 수정
+  async function isUpdateHandler() {
+    updateTodo(inputs);
+    setIsEditmode(!isEditmode);
+  }
 
   function changeHandler(e) {
     const { name, value } = e.target;
-    setInputs({ ...inputs, [name]: value });
+    setInputs({
+      ...inputs, // 기존의 input 객체 복사
+      [name]: value, // name 키를 가진 값을 value 로 설정
+    });
   }
 
-  async function updateHandler(enteredData) {
+  // 수정 버튼 구현
+  async function updateTodo(enteredData) {
     try {
-      const res = await axios({
+      await axios({
         url: `https://www.pre-onboarding-selection-task.shop/todos/${data.id}`,
-        method: 'put',
+        method: "put",
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         data: enteredData,
       });
+      setChangedInput(enteredData);
     } catch (error) {
-      alert('[ERROR] 정상적으로 업데이트되지 않았습니다.');
+      alert("업데이트에 실패했습니다.");
     }
   }
 
+  // 삭제 버튼 구현
   async function deleteHandler() {
     try {
       const res = await axios({
         url: `https://www.pre-onboarding-selection-task.shop/todos/${data.id}`,
-        method: 'delete',
+        method: "delete",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,41 +73,50 @@ function TodoElement({ data, getData }) {
         getData();
       }
     } catch (error) {
-      alert('[ERROR] 정상적으로 삭제되지 않았습니다.');
+      alert("[ERROR] 정상적으로 삭제되지 않았습니다.");
     }
   }
 
+  // 체크박스 통해 완료 여부 수정
+  useEffect(() => {
+    if (inputs.isCompleted) {
+      checked.current.checked = true;
+    } else {
+      checked.current.checked = false;
+    }
+  }, [inputs]);
+
   async function isCompletedHandler() {
-    const enteredData = {
-      isCompleted: !inputs.isCompleted,
-      todo: inputs.todo,
-    };
-    updateHandler(enteredData);
     setInputs({ ...inputs, isCompleted: !inputs.isCompleted });
   }
 
   return (
     <Li>
       <Label>
-        <Checkbox type='checkbox' onChange={isCompletedHandler} ref={checked} />
-        {isUpdatemode ? (
+        <Checkbox type="checkbox" onChange={isCompletedHandler} ref={checked} />
+        {isEditmode ? ( // 수정 모드일 때
           <div>
-            <Input data-testid='modify-input' value={inputs.todo} name='todo' onChange={changeHandler} />
-            <Button data-testid='submit-button' onClick={isUpdateHandler}>
+            <Input
+              data-testid="modify-input"
+              value={inputs.todo}
+              name="todo"
+              onChange={changeHandler}
+            />
+            <Button data-testid="submit-button" onClick={isUpdateHandler}>
               제출
             </Button>
-            <Button data-testid='cancel-button' onClick={isUpdatemodeHandler}>
+            <Button data-testid="cancel-button" onClick={cancelEdit}>
               취소
             </Button>
           </div>
         ) : (
           <div>
             <Span>{inputs.todo}</Span>
-            <Button data-testid='modify-button' onClick={isUpdateHandler}>
-              <p>수정</p>
+            <Button data-testid="modify-button" onClick={isUpdateHandler}>
+              수정
             </Button>
-            <Button data-testid='delete-button' onClick={deleteHandler}>
-              <p>삭제</p>
+            <Button data-testid="delete-button" onClick={deleteHandler}>
+              삭제
             </Button>
           </div>
         )}
@@ -106,41 +124,5 @@ function TodoElement({ data, getData }) {
     </Li>
   );
 }
-
-const Li = styled.li`
-  list-style: none;
-`;
-const Label = styled.label`
-  display: flex;
-  margin: 1em;
-  align-items: center;
-`;
-const Button = styled.button`
-  cursor: pointer;
-  margin-right: 4px;
-  width: 40px;
-  // height: px;
-`;
-const Span = styled.span`
-  margin: 0 1em 0 1em;
-`;
-const Checkbox = styled.input`
-  width: 1.1em;
-  height: 1.1em;
-  border: 1px solid #000;
-  border-radius: 3px;
-  &:checked {
-    background-color: #000;
-    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e");
-  }
-`;
-const Input = styled.input`
-  border: 1px solid #f7f7f7;
-  border-radius: 5px;
-  padding: 1em;
-  margin-right: 0.5em;
-  background-color: #f7f7fb;
-  width: 20vw;
-`;
 
 export default TodoElement;
