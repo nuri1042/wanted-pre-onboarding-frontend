@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import TodoElement from './TodoElement';
 import { Section, Div, P, Form, Input, Button, List } from '../styles/TodoStyle.js';
@@ -18,7 +18,7 @@ function TodoList() {
   }
 
   // Todo List 불러오기
-  const getData = usecallback(async () => {
+  const getData = useCallback(async () => {
     try {
       const res = await axios({
         url: 'https://www.pre-onboarding-selection-task.shop/todos',
