@@ -17,15 +17,6 @@ function TodoList() {
     setInput(e.target.value);
   }
 
-  // 로그인 되어있지 않은 상태에서 todo 페이지에 접근 시 alert 표출
-  useEffect(() => {
-    if (!localStorage.getItem('JWT')) {
-      alert('로그인 후 이용해주세요.');
-      navigate('/signin');
-    }
-    getData();
-  }, [navigate, getData]);
-
   // Todo List 불러오기
   const getData = async () => {
     try {
@@ -43,6 +34,14 @@ function TodoList() {
       alert('리스트 불러오기 실패');
     }
   };
+  // 로그인 되어있지 않은 상태에서 todo 페이지에 접근 시 alert 표출
+  useEffect(() => {
+    if (!localStorage.getItem('JWT')) {
+      alert('로그인 후 이용해주세요.');
+      navigate('/signin');
+    }
+    getData();
+  }, [navigate]);
 
   // List에 새로운 Todo 추가
   async function submitHandler(e) {
