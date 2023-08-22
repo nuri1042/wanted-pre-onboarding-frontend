@@ -33,7 +33,7 @@ function TodoList() {
     } catch (error) {
       alert('리스트 불러오기 실패');
     }
-  }, []);
+  }, [token]);
   // 로그인 되어있지 않은 상태에서 todo 페이지에 접근 시 alert 표출
   useEffect(() => {
     if (!localStorage.getItem('JWT')) {
