@@ -8,6 +8,11 @@ https://github.com/walking-sunset/selection-task
 <br />
 <br />
 
+
+### 배포 주소
+https://main--wanted-pre-onboarding-nuri.netlify.app/
+<br />
+
 ### 사용 라이브러리
 - React Router
 - HTTP Client : Axios
