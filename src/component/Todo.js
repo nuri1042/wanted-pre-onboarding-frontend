@@ -24,7 +24,7 @@ function TodoList() {
       navigate('/signin');
     }
     getData();
-  }, [navigate, getad]);
+  }, [navigate, getData]);
 
   // Todo List 불러오기
   const getData = async () => {
