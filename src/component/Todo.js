@@ -41,7 +41,7 @@ function TodoList() {
       navigate('/signin');
     }
     getData();
-  }, [navigate]);
+  }, [navigate, getData]);
 
   // List에 새로운 Todo 추가
   async function submitHandler(e) {
